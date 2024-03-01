@@ -70,8 +70,8 @@ class AprilDetector():
             cv2.rectangle(frame, (value["left"], value["top"]), (value["right"], value["bottom"]), (0, 0, 255), 2)
 	
 
-    def display_results(self, results, desired_item_id, frame):
-        
+    def display_results(self, results, desired_item_id, input_frame):
+        frame = input_frame
         for r in results:
             if r.tag_id == desired_item_id:
                 color = (0, 0, 255)
@@ -100,7 +100,7 @@ class AprilDetector():
             # 	cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         # show the output image after AprilTag detection
         self.add_lines(frame)    
-        cv2.imshow("image", frame)
+        return frame
     
     def item_in_box(self, center):
         (cX, cY) = (int(center[0]), int(center[1]))
@@ -135,31 +135,31 @@ class AprilDetector():
                 obj_id = obj_key
        
         retval = self.get_location(results, obj_id)
-        self.display_results(results, obj_id, frame)
+        frame = self.display_results(results, obj_id, frame)
         if obj_id == -3:
            return obj_id
-        return retval
+        return retval, frame
+    
     def clean(self):
        self.cam.clean()
        cv2.destroyAllWindows()
     
              
          
-key_fname = "tag_dict.csv"
-box_loc_fname = "eggs.csv"
-desired_items = ["Eggs", "Bread", "Tequila", "Beer"]
+# key_fname = "tag_dict.csv"
+# box_loc_fname = "eggs.csv"
+# desired_items = ["Eggs", "Bread", "Tequila", "Beer"]
 # camera_name = "/dev/video4"
-camera_name = 0
 
-ad = AprilDetector(camera_name, key_fname, box_loc_fname)
-i = 0
-while True:
-    i += 1
-    i %= 4
-    retval = ad.get_item_loc_by_key(desired_items[i])
+# ad = AprilDetector(camera_name, key_fname, box_loc_fname)
+# i = 0
+# while True:
+#     i += 1
+#     i %= 4
+#     retval = ad.get_item_loc_by_key(desired_items[i])
     
-    print("Item " + desired_items[i] + " in location " + str(retval))
+#     print("Item " + desired_items[i] + " in location " + str(retval))
 
-    key = cv2.waitKey(0)
-    if key == 27:
-        break
+#     key = cv2.waitKey(0)
+#     if key == 27:
+#         break
