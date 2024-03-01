@@ -1,4 +1,4 @@
-import apriltag
+import pupil_apriltags as pa
 import cv2
 import csv
 import queue, threading
@@ -53,8 +53,17 @@ class AprilDetector():
             self.box_locs[i]["right"] = int(row[3])
             i += 1
 			
-        options = apriltag.DetectorOptions(families = "tag36h11")
-        self.detector = apriltag.Detector(options)
+        # options = apriltag.DetectorOptions(families = "tag36h11")
+        # self.detector = apriltag.Detector(options)
+        self.detector = pa.Detector(
+            families="tag36h11",
+            nthreads=1,
+            quad_decimate=1.0,
+            quad_sigma=0.0,
+            refine_edges=1,
+            decode_sharpening=0.25,
+            debug=0
+            )
 		
     def add_lines(self, frame):
         for value in self.box_locs.values():
@@ -139,8 +148,10 @@ class AprilDetector():
 key_fname = "tag_dict.csv"
 box_loc_fname = "eggs.csv"
 desired_items = ["Eggs", "Bread", "Tequila", "Beer"]
+# camera_name = "/dev/video4"
+camera_name = 0
 
-ad = AprilDetector("/dev/video4", key_fname, box_loc_fname)
+ad = AprilDetector(camera_name, key_fname, box_loc_fname)
 i = 0
 while True:
     i += 1
